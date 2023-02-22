@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Hello world!
+ * @author donald.donchi-fofack
+ * @version 1.0.0
  *
  */
 public class App 
