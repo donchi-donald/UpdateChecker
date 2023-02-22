@@ -1,4 +1,4 @@
-package de.awp-consult;
+package de.awp_consult;
 
 import static org.junit.Assert.assertTrue;
 
