@@ -25,7 +25,6 @@ public class UtilImplTest extends TestCase {
                 Config.PATH_TMP+Config.FIREFOX_FILENAME
         };
         util.downloadAndUpdateFiles(urls, filenamesWithPath);
-
     }
 
     public void testDownloadFile() throws IOException {
