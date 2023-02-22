@@ -1,10 +1,18 @@
 package de.awp_consult.util;
 
+import de.awp_consult.config.Config;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class UtilImpl implements Util{
@@ -34,7 +42,8 @@ public class UtilImpl implements Util{
      */
     @Override
     public byte[] getChecksum(byte[] content) throws NoSuchAlgorithmException {
-        return new byte[0];
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        return digest.digest(content);
     }
 
     /**
@@ -46,7 +55,11 @@ public class UtilImpl implements Util{
      */
     @Override
     public byte[] readChecksumFromFile(String filename) throws IOException {
-        return new byte[0];
+        Path path = Paths.get(filename);
+        if (!Files.exists(path)) {
+            return null;
+        }
+        return Files.readAllBytes(path);
     }
 
     /**
@@ -58,7 +71,7 @@ public class UtilImpl implements Util{
      */
     @Override
     public void saveToFile(byte[] content, String filename) throws IOException {
-
+        FileUtils.writeByteArrayToFile(new File(filename), content);
     }
 
     /**
@@ -70,20 +83,10 @@ public class UtilImpl implements Util{
      */
     @Override
     public void saveChecksumToFile(byte[] checksum, String filename) throws IOException {
-
+        String checksumHex = Hex.encodeHexString(checksum);
+        FileUtils.writeStringToFile(new File(filename), checksumHex, "UTF-8");
     }
 
-    /**
-     * Diese Methode lädt Dateien von bestimmten URLs herunter und prüft, ob die Dateien seit dem letzten Mal geändert wurden.
-     * Wenn eine Datei aktualisiert wurde, wird die neue Datei heruntergeladen und ihre Integrität geprüft.
-     *
-     * @throws IOException              falls ein Problem beim Herunterladen oder Speichern der Dateien auftritt.
-     * @throws NoSuchAlgorithmException falls eine nicht unterstützte Hash-Algorithmus angegeben wird.
-     */
-    @Override
-    public void downloadAndUpdateFiles() throws IOException, NoSuchAlgorithmException {
-
-    }
 
     /**
      * Diese Methode prüft, ob eine Datei seit dem letzten Mal geändert wurde, indem sie die Integrität der alten und neuen Datei vergleicht.
@@ -95,8 +98,16 @@ public class UtilImpl implements Util{
      * @throws NoSuchAlgorithmException falls eine nicht unterstützte Hash-Algorithmus angegeben wird.
      */
     @Override
-    public boolean isFileUpToDate(Util util, String filename, byte[] content) throws NoSuchAlgorithmException {
-        return false;
+    public boolean isFileUpToDate(Util util, String filename, byte[] content) throws NoSuchAlgorithmException, IOException {
+            byte[] newChecksum = util.getChecksum(content);
+            byte[] oldChecksum = util.readChecksumFromFile(filename + ".sha256");
+
+            if (oldChecksum != null && MessageDigest.isEqual(oldChecksum, newChecksum)) {
+                System.out.println(filename + " ist auf dem neuesten Stand.");
+                return true;
+            }
+
+            return false;
     }
 
     /**
@@ -110,6 +121,48 @@ public class UtilImpl implements Util{
      */
     @Override
     public void updateFile(Util util, String filename, byte[] content) throws IOException, NoSuchAlgorithmException {
-
+            util.saveToFile(content, filename);
+            util.saveChecksumToFile(util.getChecksum(content), filename + ".sha256");
+            System.out.println(filename + " wurde aktualisiert.");
     }
+
+    /**
+     * Diese Methode lädt Dateien von bestimmten URLs herunter und prüft, ob die Dateien seit dem letzten Mal geändert wurden.
+     * Wenn eine Datei aktualisiert wurde, wird die neue Datei heruntergeladen und ihre Integrität geprüft.
+     *
+     * @throws IOException              falls ein Problem beim Herunterladen oder Speichern der Dateien auftritt.
+     * @throws NoSuchAlgorithmException falls eine nicht unterstützte Hash-Algorithmus angegeben wird.
+     */
+    @Override
+    public void downloadAndUpdateFiles() throws IOException, NoSuchAlgorithmException {
+        Util util = new UtilImpl();
+
+        String[] urls = {
+                Config.TOTAL_COMMANDER_DOWNLOAD_URL,
+                Config.FIREFOX_DOWNLOAD_URL
+        };
+        String[] filenamesWithPath = {
+                Config.PATH_MY_FILE+Config.TOTAL_COMMANDER_FILENAME,
+                Config.PATH_MY_FILE+Config.FIREFOX_FILENAME
+        };
+
+        for (int i = 0; i < urls.length; i++) {
+            String url = urls[i];
+            String filename = filenamesWithPath[i];
+
+            try {
+                byte[] content = util.downloadFile(url);
+
+                if (isFileUpToDate(util, filename, content)) {
+                    continue;
+                }
+
+                updateFile(util, filename, content);
+            } catch (IOException | NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }

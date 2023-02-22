@@ -71,7 +71,7 @@ public interface Util {
      * @return true, wenn die Datei auf dem neuesten Stand ist, andernfalls false.
      * @throws NoSuchAlgorithmException falls eine nicht unterstützte Hash-Algorithmus angegeben wird.
      */
-    public boolean isFileUpToDate(Util util, String filename, byte[] content) throws NoSuchAlgorithmException;
+    public boolean isFileUpToDate(Util util, String filename, byte[] content) throws NoSuchAlgorithmException, IOException;
 
     /**
      * Diese Methode speichert eine heruntergeladene Datei und ihre Integrität in einer separaten Checksum-Datei.
