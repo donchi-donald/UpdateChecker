@@ -1,6 +1,10 @@
 package de.awp_consult.util;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 
 public class UtilImpl implements Util{
@@ -13,7 +17,12 @@ public class UtilImpl implements Util{
      */
     @Override
     public byte[] downloadFile(String url) throws IOException {
-        return new byte[0];
+        InputStream inputStream = new URL(url).openStream();
+        try {
+            return IOUtils.toByteArray(inputStream);
+        } finally {
+            inputStream.close();
+        }
     }
 
     /**
