@@ -60,7 +60,7 @@ public interface Util {
      * @throws IOException falls ein Problem beim Herunterladen oder Speichern der Dateien auftritt.
      * @throws NoSuchAlgorithmException falls eine nicht unterstützte Hash-Algorithmus angegeben wird.
      */
-    public void downloadAndUpdateFiles() throws IOException, NoSuchAlgorithmException;
+    public void downloadAndUpdateFiles(String[] urls,  String[] filenamesWithPath) throws IOException, NoSuchAlgorithmException;
 
     /**
      * Diese Methode prüft, ob eine Datei seit dem letzten Mal geändert wurde, indem sie die Integrität der alten und neuen Datei vergleicht.

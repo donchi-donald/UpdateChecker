@@ -134,17 +134,8 @@ public class UtilImpl implements Util{
      * @throws NoSuchAlgorithmException falls eine nicht unterstützte Hash-Algorithmus angegeben wird.
      */
     @Override
-    public void downloadAndUpdateFiles() throws IOException, NoSuchAlgorithmException {
+    public void downloadAndUpdateFiles(String[] urls,  String[] filenamesWithPath) throws IOException, NoSuchAlgorithmException {
         Util util = new UtilImpl();
-
-        String[] urls = {
-                Config.TOTAL_COMMANDER_DOWNLOAD_URL,
-                Config.FIREFOX_DOWNLOAD_URL
-        };
-        String[] filenamesWithPath = {
-                Config.PATH_MY_FILE+Config.TOTAL_COMMANDER_FILENAME,
-                Config.PATH_MY_FILE+Config.FIREFOX_FILENAME
-        };
 
         for (int i = 0; i < urls.length; i++) {
             String url = urls[i];
