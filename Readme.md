@@ -31,8 +31,6 @@ Bei diesem Projekt geht es um das Herunterladen der Windows-Setup-Dateien für d
 
 ### Screenhots 
 ***
-* Java klassen diagramm
-  ![Image text](./img/bild.png)
 * Ausgabe der Unit-Tests
   ![Unit Test](./img/unit_test.png)
 
