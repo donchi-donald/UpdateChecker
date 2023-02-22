@@ -20,8 +20,8 @@ Bei diesem Projekt geht es um das Herunterladen der Windows-Setup-Dateien für d
 
 ### Installation
 ***
-1. Klone das Repository mit `git clone https://github.com/donchi-donald/awp-consult-test.git`
-2. Navigiere in das Projektverzeichnis mit `cd awp-consult-test`
+1. Klone das Repository mit `git clone https://github.com/donchi-donald/UpdateChecker.git`
+2. Navigiere in das Projektverzeichnis mit `cd UpdateChecker`
 3. Führe `mvn package` aus, um das Projekt zu kompilieren und ein ausführbares JAR-Datei zu erstellen.
 
 ### Verwendung
